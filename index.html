@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Reflection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --bg-tint: #ede6da;
+    --ink: #2a2520;
+    --ink-soft: #5a5048;
+    --ink-faint: #8a7f73;
+    --line: #d8cfc0;
+    --accent: #8b3a2f;
+    --accent-soft: #b85c4e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse at top left, rgba(184, 92, 78, 0.06), transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(139, 58, 47, 0.04), transparent 50%),
+      var(--bg);
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  .frame {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1.35rem;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+
+  .meta {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    font-weight: 400;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    margin-bottom: 3.5rem;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+  }
+
+  .progress-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+  .progress-count {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .progress-track {
+    height: 1px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    height: 1px;
+    width: 0%;
+    background: var(--accent);
+    transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Stage */
+  .stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .step {
+    display: none;
+    animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .step.active { display: block; }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Intro */
+  .intro-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.75rem;
+  }
+
+  .intro-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    line-height: 1.05;
+    margin-bottom: 1.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .intro-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .intro-body {
+    font-size: 1.02rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.25rem;
+    max-width: 32rem;
+  }
+
+  .intro-body:last-of-type {
+    margin-bottom: 2.75rem;
+  }
+
+  /* Question */
+  .theme {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .question {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(1.55rem, 3.6vw, 1.95rem);
+    line-height: 1.32;
+    color: var(--ink);
+    margin-bottom: 2rem;
+    letter-spacing: -0.005em;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 180px;
+    background: transparent;
+    border: none;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 1.25rem 0.25rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+
+  textarea::placeholder {
+    color: var(--ink-faint);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  textarea:focus {
+    border-top-color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2.5rem;
+    gap: 1rem;
+  }
+
+  .controls.center { justify-content: center; }
+
+  button {
+    background: none;
+    border: none;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0.85rem 0;
+    transition: color 0.25s ease, opacity 0.25s ease;
+    position: relative;
+  }
+
+  button:hover { color: var(--accent); }
+  button:disabled { opacity: 0.3; cursor: not-allowed; }
+  button:disabled:hover { color: var(--ink); }
+
+  .btn-back { color: var(--ink-faint); }
+
+  .btn-primary {
+    color: var(--accent);
+    padding-right: 1.75rem;
+  }
+
+  .btn-primary::after {
+    content: '→';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease;
+    font-size: 0.95rem;
+  }
+
+  .btn-primary:hover::after { transform: translateY(-50%) translateX(4px); }
+  .btn-primary:disabled::after { content: '→'; }
+
+  /* End screen */
+  .end-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .end-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(2rem, 5vw, 2.6rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .end-title em { font-style: italic; color: var(--accent); }
+
+  .end-body {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    margin-bottom: 1rem;
+    max-width: 32rem;
+  }
+
+  .end-body:last-of-type { margin-bottom: 2.25rem; }
+
+  .output-wrap {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .output {
+    width: 100%;
+    background: var(--bg-tint);
+    border: 1px solid var(--line);
+    padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.98rem;
+    line-height: 1.65;
+    color: var(--ink);
+    max-height: 360px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border-radius: 2px;
+  }
+
+  .output::-webkit-scrollbar { width: 6px; }
+  .output::-webkit-scrollbar-track { background: transparent; }
+  .output::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+  .copy-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .copy-hint {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+  .btn-copy {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 0.85rem 1.5rem;
+    border-radius: 2px;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    transition: background 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .btn-copy:hover { background: var(--accent); color: var(--bg); }
+  .btn-copy.copied { background: var(--accent); color: var(--bg); }
+
+  .end-footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footnote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--ink-faint);
+  }
+
+  /* Skip link for question 5 / sensitive ones */
+  .skip-link {
+    margin-top: 1rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--ink-faint);
+    cursor: pointer;
+    display: inline-block;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .skip-link:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  @media (max-width: 520px) {
+    body { padding: 2rem 1.25rem 3rem; }
+    header { margin-bottom: 2.75rem; }
+    .progress-wrap { margin-bottom: 2.5rem; }
+    .copy-row { flex-direction: column; align-items: stretch; }
+    .btn-copy { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <header>
+    <span class="mark">a reflection</span>
+    <span class="meta">Ten questions · For you</span>
+  </header>
+
+  <div class="progress-wrap" id="progressWrap" style="visibility: hidden;">
+    <div class="progress-meta">
+      <span class="progress-label" id="progressLabel">Connection</span>
+      <span class="progress-count" id="progressCount">01 / 10</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <main class="stage" id="stage">
+
+    <!-- Intro -->
+    <section class="step active" id="step-intro">
+      <div class="intro-eyebrow">Before we begin</div>
+      <h1 class="intro-title">Ten questions,<br><em>slowly.</em></h1>
+      <p class="intro-body">This isn't a quiz. There are no scores. The questions move through four themes — connection, desire, the past, the future — and some of them are harder than they look.</p>
+      <p class="intro-body">Write whatever's true. Half-formed is fine. Skip if you want to. At the end you'll get a block of text to paste into a new Claude conversation, where you can think about it more.</p>
+      <p class="intro-body">Nothing leaves this page until you copy it yourself.</p>
+      <div class="controls center">
+        <button class="btn-primary" id="beginBtn">Begin</button>
+      </div>
+    </section>
+
+    <!-- Questions populated by JS -->
+    <div id="questionContainer"></div>
+
+    <!-- End -->
+    <section class="step" id="step-end">
+      <div class="end-eyebrow">That's all of them</div>
+      <h2 class="end-title">Take this <em>somewhere quieter.</em></h2>
+      <p class="end-body">Below is your reflection, framed as a prompt. Copy it, open a new Claude conversation, and paste it in. You'll get a personal response that reads what you wrote and thinks about it with you.</p>
+      <p class="end-body">A new conversation matters — it gives you a clean reader, with no other context bleeding in.</p>
+
+      <div class="output-wrap">
+        <pre class="output" id="output"></pre>
+      </div>
+
+      <div class="copy-row">
+        <span class="copy-hint">Ready when you are.</span>
+        <button class="btn-copy" id="copyBtn">Copy reflection</button>
+      </div>
+
+      <div class="end-footer">
+        <span class="footnote">Nothing was saved.</span>
+        <button class="btn-back" id="restartBtn">Start over</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  const questions = [
+    { theme: 'Connection', text: 'When do you feel most like yourself around your partner?', placeholder: 'A moment, a setting, a kind of conversation…' },
+    { theme: 'Connection', text: "What's something your partner does that makes you feel genuinely seen — not just looked after, but seen? And is there something you wish they did more of?", placeholder: 'The seeing is the harder part to name…' },
+    { theme: 'Desire', text: "What does intimacy actually mean to you — not what it should mean, but what it means when you're honest with yourself?", placeholder: 'No correct answer here. Just the honest one…' },
+    { theme: 'Desire', text: 'Is there a gap between how sex feels and how you wish it felt? If you could change one thing about how you are together physically, what would it be?', placeholder: 'You can be specific. Or vague. Either is useful…' },
+    { theme: 'Desire', text: "Is there something you've wanted to try or suggest but haven't quite found the words for?", placeholder: 'The not-finding-the-words is itself worth writing about…' },
+    { theme: 'The Past', text: 'Growing up, what did you learn — from family, from religion, from wherever — about what love was supposed to look like? Do you think any of that still runs in the background for you?', placeholder: 'The scripts we inherit are usually invisible until we name them…' },
+    { theme: 'The Past', text: 'Is there a version of you and your partner from earlier that you find yourself thinking about? What was different then?', placeholder: 'Difference, not necessarily better or worse…' },
+    { theme: 'The Past', text: "What's something from your past that you think your partner doesn't fully understand about you yet?", placeholder: 'Something they haven\'t quite arrived at, or you haven\'t quite shown…' },
+    { theme: 'The Future', text: 'What does trust mean to you in practice — day to day, not as a concept?', placeholder: 'In practice, not in principle…' },
+    { theme: 'The Future', text: 'Five years from now — what do you actually want this relationship to look like? Not what\'s realistic. What do you actually want?', placeholder: 'Want first. Realism comes later, somewhere else…' }
+  ];
+
+  const answers = new Array(questions.length).fill('');
+  let current = -1; // -1 = intro
+  const total = questions.length;
+
+  const stage = document.getElementById('stage');
+  const container = document.getElementById('questionContainer');
+  const progressWrap = document.getElementById('progressWrap');
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+  const progressCount = document.getElementById('progressCount');
+  const stepIntro = document.getElementById('step-intro');
+  const stepEnd = document.getElementById('step-end');
+
+  // Build question steps
+  questions.forEach((q, i) => {
+    const sec = document.createElement('section');
+    sec.className = 'step';
+    sec.id = `step-${i}`;
+    sec.innerHTML = `
+      <div class="theme">${q.theme}</div>
+      <h2 class="question">${q.text}</h2>
+      <textarea
+        id="answer-${i}"
+        placeholder="${q.placeholder}"
+        aria-label="Your answer"
+      ></textarea>
+      <div class="controls">
+        <button class="btn-back" data-action="back">${i === 0 ? '' : '← Back'}</button>
+        <button class="btn-primary" data-action="next">${i === total - 1 ? 'Finish' : 'Next'}</button>
+      </div>
+      <div style="text-align: right; margin-top: 0.25rem;">
+        <span class="skip-link" data-action="skip">prefer to skip this one</span>
+      </div>
+    `;
+    container.appendChild(sec);
+  });
+
+  function showStep(idx) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    if (idx === -1) {
+      stepIntro.classList.add('active');
+      progressWrap.style.visibility = 'hidden';
+    } else if (idx === total) {
+      stepEnd.classList.add('active');
+      progressWrap.style.visibility = 'visible';
+      progressFill.style.width = '100%';
+      progressLabel.textContent = 'Complete';
+      progressCount.textContent = `${total} / ${total}`;
+      buildOutput();
+    } else {
+      document.getElementById(`step-${idx}`).classList.add('active');
+      progressWrap.style.visibility = 'visible';
+      progressFill.style.width = `${((idx) / total) * 100}%`;
+      progressLabel.textContent = questions[idx].theme;
+      progressCount.textContent = `${String(idx + 1).padStart(2, '0')} / ${total}`;
+      // Restore answer if any
+      const ta = document.getElementById(`answer-${idx}`);
+      ta.value = answers[idx] || '';
+      // Focus after a beat to let animation settle
+      setTimeout(() => ta.focus(), 350);
+      // Scroll up
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    current = idx;
+  }
+
+  function saveCurrent() {
+    if (current >= 0 && current < total) {
+      const ta = document.getElementById(`answer-${current}`);
+      answers[current] = ta.value.trim();
+    }
+  }
+
+  // Begin
+  document.getElementById('beginBtn').addEventListener('click', () => showStep(0));
+
+  // Question controls (event delegation)
+  container.addEventListener('click', (e) => {
+    const action = e.target.dataset.action;
+    if (!action) return;
+    if (action === 'next') {
+      saveCurrent();
+      showStep(current + 1);
+    } else if (action === 'back') {
+      saveCurrent();
+      if (current > 0) showStep(current - 1);
+    } else if (action === 'skip') {
+      const ta = document.getElementById(`answer-${current}`);
+      ta.value = '';
+      answers[current] = '';
+      showStep(current + 1);
+    }
+  });
+
+  // Keyboard: Cmd/Ctrl+Enter to advance
+  container.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      saveCurrent();
+      showStep(current + 1);
+    }
+  });
+
+  // Build the output prompt
+  function buildOutput() {
+    const themeMap = {
+      'Connection': 'CONNECTION',
+      'Desire': 'DESIRE',
+      'The Past': 'THE PAST',
+      'The Future': 'THE FUTURE'
+    };
+
+    let body = `I just sat with ten questions about my relationship — across four themes: connection, desire, the past, the future. Below are the questions and what I wrote. Some I left blank or skipped; that's deliberate, not an oversight.
+
+I'd like you to read this carefully and reflect it back to me. Not in a generic-therapist way. I'm looking for:
+
+— What patterns or threads do you notice across my answers?
+— Where do you see tension, contradiction, or something I'm circling without naming?
+— Where do you see clarity I might not have noticed myself?
+— What's one question you'd ask me next, if we were sitting across from each other?
+
+Be honest, warm, and specific. Don't flatter me and don't soften things that feel important. If something I wrote suggests I already know an answer I'm avoiding, say so. If you'd want to push back on something, push back.
+
+Here's what I wrote:
+
+`;
+
+    let lastTheme = '';
+    questions.forEach((q, i) => {
+      const themeKey = themeMap[q.theme];
+      if (themeKey !== lastTheme) {
+        body += `\n— ${themeKey} —\n\n`;
+        lastTheme = themeKey;
+      }
+      const ans = answers[i].trim();
+      body += `Q${i + 1}. ${q.text}\n`;
+      body += ans ? `${ans}\n\n` : `[skipped]\n\n`;
+    });
+
+    body += `\nThat's all of it. Take your time with the response.`;
+
+    document.getElementById('output').textContent = body;
+  }
+
+  // Copy
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', async () => {
+    const text = document.getElementById('output').textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+      copyBtn.textContent = '✓ Copied';
+      copyBtn.classList.add('copied');
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy reflection';
+        copyBtn.classList.remove('copied');
+      }, 2400);
+    } catch {
+      // Fallback: select text
+      const range = document.createRange();
+      range.selectNodeContents(document.getElementById('output'));
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      copyBtn.textContent = 'Select and copy';
+    }
+  });
+
+  // Restart
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    if (!confirm('Start over? Your answers will be cleared.')) return;
+    answers.fill('');
+    questions.forEach((_, i) => {
+      const ta = document.getElementById(`answer-${i}`);
+      if (ta) ta.value = '';
+    });
+    showStep(-1);
+  });
+</script>
+</body>
+</html>
